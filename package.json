@@ -1,7 +1,7 @@
 {
   "name": "stratagem",
   "version": "0.0.1",
-  "description": "A lightweight framework for making turn-based and tactical RPG games",
+  "description": "A lightweight node module for making turn-based and tactical RPG games",
   "keywords": ["turn-based", "tactical", "rpg"],
   "license": "MIT",
   "author": "Justin Wells <justinleewells@icloud.com> (http://wwww.justinleewells.com)",
