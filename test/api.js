@@ -12,6 +12,18 @@ describe('API', function () {
       done();
     });
 
+    it('should set attrModType', function (done) {
+      API.configure({attrModType: 'percent'});
+      config.attrModType.should.equal('percent');
+      done();
+    });
+
+    it('should set addResourceDiff', function (done) {
+      API.configure({addResourceDiff: false});
+      config.addResourceDiff.should.equal(false);
+      done();
+    });
+
   });
 
 });
