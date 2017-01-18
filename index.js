@@ -18,7 +18,7 @@ const API = {
    * @param {Object} opts - The configuration object
    */
   configure: (opts) => {
-    var values = _.pick(opts, ['resModType']);
+    var values = _.pick(opts, _.keys(config));
     _.forEach(values, (value, key) => {
       config[key] = value;
     });
