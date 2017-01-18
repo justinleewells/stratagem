@@ -77,6 +77,28 @@ describe('Resource', function () {
 
   });
 
+  describe('#setBase()', function () {
+
+    it('should set the base value', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.setBase(10);
+      resource.getBase().should.equal(10);
+      done();
+    });
+
+    it('should recalculate the max value', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.initialize(10);
+      resource.setMod(50);
+      resource.setBase(5);
+      resource.getMaximum().should.equal(55);
+      done();
+    });
+
+  });
+
   describe('#setMod()', function () {
 
     it('should set the mod value', function (done) {
