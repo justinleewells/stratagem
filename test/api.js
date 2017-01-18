@@ -6,9 +6,9 @@ describe('API', function () {
 
   describe('#configure()', function () {
 
-    it('should set modType', function (done) {
-      API.configure({modType: 'percent'});
-      config.modType.should.equal('percent');
+    it('should set resModType', function (done) {
+      API.configure({resModType: 'percent'});
+      config.resModType.should.equal('percent');
       done();
     });
 

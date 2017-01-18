@@ -15,13 +15,10 @@ const API = {
   /**
    * Allows the programmer to customize the framework
    * @function
-   * @param {Object} opts - The configuration object.
-   * @param {string} opts.modType - Determines if integers or percentages are
-   *                 used for attribute and resource modifications. Accepts 'integer' and
-   *                 'percent'.
+   * @param {Object} opts - The configuration object
    */
   configure: (opts) => {
-    var values = _.pick(opts, ['modType']);
+    var values = _.pick(opts, ['resModType']);
     _.forEach(values, (value, key) => {
       config[key] = value;
     });

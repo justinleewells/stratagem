@@ -17,7 +17,7 @@ describe('Resource', function () {
   describe('#setBase()', function () {
 
     it('should set the base value', function (done) {
-      config.modType = 'integer';
+      config.resModType = 'integer';
       var resource = new Resource();
       resource.setBase(10);
       resource.getBase().should.equal(10);
@@ -25,7 +25,7 @@ describe('Resource', function () {
     });
 
     it('should recalculate the max value', function (done) {
-      config.modType = 'integer';
+      config.resModType = 'integer';
       var resource = new Resource();
       resource.initialize(10);
       resource.setMod(50);
@@ -49,7 +49,7 @@ describe('Resource', function () {
   describe('#setCurrent()', function () {
 
     it('should set the current value', function (done) {
-      config.modType = 'integer';
+      config.resModType = 'integer';
       var resource = new Resource();
       resource.initialize(100);
       resource.setCurrent(50);
@@ -58,7 +58,7 @@ describe('Resource', function () {
     });
 
     it('should set a current value over max to max', function (done) {
-      config.modType = 'integer';
+      config.resModType = 'integer';
       var resource = new Resource();
       resource.initialize(100);
       resource.setCurrent(1000);
@@ -91,7 +91,7 @@ describe('Resource', function () {
   describe('#setMod()', function () {
 
     it('should set the mod value', function (done) {
-      config.modType = 'integer';
+      config.resModType = 'integer';
       var resource = new Resource();
       resource.setMod(50);
       resource.getMod().should.equal(50);
@@ -99,7 +99,7 @@ describe('Resource', function () {
     });
 
     it('should recalculate the max value', function (done) {
-      config.modType = 'integer';
+      config.resModType = 'integer';
       var resource = new Resource();
       resource.initialize(10);
       resource.setMod(50);
