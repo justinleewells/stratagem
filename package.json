@@ -16,7 +16,6 @@
     "should": "^11.1.2"
   },
   "dependencies": {
-    "config-js": "^1.1.9",
     "lodash": "^4.17.4"
   },
   "scripts": {
