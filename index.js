@@ -13,7 +13,7 @@ var config = require('./lib/config');
 const API = {
 
   /**
-   * Allows the user to customize the framework
+   * Allows the programmer to customize the framework
    * @function
    * @param {Object} opts - The configuration object.
    * @param {string} opts.modType - Determines if integers or percentages are
