@@ -69,7 +69,7 @@ describe('Resource', function () {
 
     it('should reset the mod value', function (done) {
       var resource = new Resource();
-      resource.addMod(10);
+      resource.setMod(10);
       resource.initialize(10);
       resource.getMod().should.equal(0);
       done();
@@ -77,13 +77,12 @@ describe('Resource', function () {
 
   });
 
-  describe('#addMod()', function () {
+  describe('#setMod()', function () {
 
-    it('should add the mod value', function (done) {
+    it('should set the mod value', function (done) {
       config.modType = 'integer';
       var resource = new Resource();
-      resource.initialize(10);
-      resource.addMod(50);
+      resource.setMod(50);
       resource.getMod().should.equal(50);
       done();
     });
@@ -92,7 +91,7 @@ describe('Resource', function () {
       config.modType = 'integer';
       var resource = new Resource();
       resource.initialize(10);
-      resource.addMod(50);
+      resource.setMod(50);
       resource.getMaximum().should.equal(60);
       done();
     });
