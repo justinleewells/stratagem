@@ -14,11 +14,55 @@ describe('Resource', function () {
 
   });
 
+  describe('#setBase()', function () {
+
+    it('should set the base value', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.setBase(10);
+      resource.getBase().should.equal(10);
+      done();
+    });
+
+    it('should recalculate the max value', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.initialize(10);
+      resource.setMod(50);
+      resource.setBase(5);
+      resource.getMaximum().should.equal(55);
+      done();
+    });
+
+  });
+
   describe('#getCurrent()', function () {
 
     it('should return the current value', function (done) {
       var resource = new Resource();
       resource.getCurrent().should.equal(0);
+      done();
+    });
+
+  });
+
+  describe('#setCurrent()', function () {
+
+    it('should set the current value', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.initialize(100);
+      resource.setCurrent(50);
+      resource.getCurrent().should.equal(50);
+      done();
+    });
+
+    it('should set a current value over max to max', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.initialize(100);
+      resource.setCurrent(1000);
+      resource.getCurrent().should.equal(100);
       done();
     });
 
@@ -39,6 +83,27 @@ describe('Resource', function () {
     it('should return the mod value', function (done) {
       var resource = new Resource();
       resource.getMod().should.equal(0);
+      done();
+    });
+
+  });
+
+  describe('#setMod()', function () {
+
+    it('should set the mod value', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.setMod(50);
+      resource.getMod().should.equal(50);
+      done();
+    });
+
+    it('should recalculate the max value', function (done) {
+      config.modType = 'integer';
+      var resource = new Resource();
+      resource.initialize(10);
+      resource.setMod(50);
+      resource.getMaximum().should.equal(60);
       done();
     });
 
@@ -72,49 +137,6 @@ describe('Resource', function () {
       resource.setMod(10);
       resource.initialize(10);
       resource.getMod().should.equal(0);
-      done();
-    });
-
-  });
-
-  describe('#setBase()', function () {
-
-    it('should set the base value', function (done) {
-      config.modType = 'integer';
-      var resource = new Resource();
-      resource.setBase(10);
-      resource.getBase().should.equal(10);
-      done();
-    });
-
-    it('should recalculate the max value', function (done) {
-      config.modType = 'integer';
-      var resource = new Resource();
-      resource.initialize(10);
-      resource.setMod(50);
-      resource.setBase(5);
-      resource.getMaximum().should.equal(55);
-      done();
-    });
-
-  });
-
-  describe('#setMod()', function () {
-
-    it('should set the mod value', function (done) {
-      config.modType = 'integer';
-      var resource = new Resource();
-      resource.setMod(50);
-      resource.getMod().should.equal(50);
-      done();
-    });
-
-    it('should recalculate the max value', function (done) {
-      config.modType = 'integer';
-      var resource = new Resource();
-      resource.initialize(10);
-      resource.setMod(50);
-      resource.getMaximum().should.equal(60);
       done();
     });
 
