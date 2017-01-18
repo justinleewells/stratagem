@@ -1,0 +1,6 @@
+{
+  "source": {
+    "include": ["./index.js", "./lib"],
+    "exclude": ["./node_modules"]
+  }
+}
