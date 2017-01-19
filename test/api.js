@@ -24,6 +24,12 @@ describe('API', function () {
       done();
     });
 
+    it('should set unitProperties', function (done) {
+      API.configure({unitProperties: {name: 'String'}});
+      config.unitProperties.name.should.equal('String');
+      done();
+    });
+
   });
 
 });
