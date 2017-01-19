@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.3
+* Implemented PropertyWrapper object
+
 ## 0.0.2
 * Implemented configuration
 * Implemented Resource object
