@@ -30,6 +30,13 @@ describe('API', function () {
       done();
     });
 
+    it('should set unitEvents', function (done) {
+      API.configure({unitEvents: ['Attack']});
+      config.unitEvents.length.should.equal(1);
+      config.unitEvents[0].should.equal('Attack');
+      done();
+    });
+
   });
 
 });
