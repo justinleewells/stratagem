@@ -15,9 +15,7 @@
     "mocha": "^3.2.0",
     "should": "^11.1.2"
   },
-  "dependencies": {
-    "lodash": "^4.17.4"
-  },
+  "dependencies": {},
   "scripts": {
     "test": "mocha",
     "generate-doc": "jsdoc -r -c jsdoc.conf.json"

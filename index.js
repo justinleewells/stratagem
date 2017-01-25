@@ -1,8 +1,5 @@
 'use strict';
 
-// Libraries
-var _ = require('lodash');
-
 // Objects
 var config = require('./lib/config');
 
@@ -18,10 +15,14 @@ const API = {
    * @param {Object} opts - The configuration object
    */
   configure: (opts) => {
-    var values = _.pick(opts, _.keys(config));
-    _.forEach(values, (value, key) => {
-      config[key] = value;
-    });
+    let keys = Object.keys(config);
+    let values = keys.reduce(function (obj, key) {
+      if (opts[key] !== undefined) obj[key] = opts[key];
+      return obj;
+    }, {});
+    for (let key in values) {
+      config[key] = values[key];
+    }
   }
 
 };
