@@ -2,6 +2,8 @@
 
 ## 0.0.3
 * Implemented PropertyWrapper object
+* Implemented Event object
+* Implemented EventWrapper object
 
 ## 0.0.2
 * Implemented configuration
