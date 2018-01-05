@@ -1,9 +1,0 @@
-{
-  "source": {
-    "include": ["./index.js", "./lib"],
-    "exclude": ["./node_modules"]
-  },
-  "opts": {
-    "template": "node_modules/minami"
-  }
-}
