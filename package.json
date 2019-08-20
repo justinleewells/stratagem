@@ -1,6 +1,6 @@
 {
   "name": "stratagem",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A lightweight node module for making turn-based and tactical RPG games",
   "keywords": [
     "turn-based",
@@ -10,7 +10,12 @@
   "license": "MIT",
   "author": "Justin Wells <justinleewells@icloud.com> (http://wwww.justinleewells.com)",
   "main": "./index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0"
+  },
   "dependencies": {},
-  "scripts": {}
+  "scripts": {
+    "test": "mocha"
+  }
 }
