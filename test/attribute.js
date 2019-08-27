@@ -82,4 +82,71 @@ describe('Attribute', () => {
       done()
     })
   })
+  describe('#_calculateModifiedBase', () => {
+    it('handles add modifiers', (done) => {
+      let attribute = new Attribute({
+        base: 10,
+        current: 10,
+        modifiers: [{
+          id: 'foo',
+          type: 'add',
+          value: 10
+        }]
+      })
+      expect(attribute._calculateModifiedBase()).to.equal(20)
+      done()
+    })
+    it('handles subtract modifiers', (done) => {
+      let attribute = new Attribute({
+        base: 10,
+        current: 10,
+        modifiers: [{
+          id: 'foo',
+          type: 'subtract',
+          value: 10
+        }]
+      })
+      expect(attribute._calculateModifiedBase()).to.equal(0)
+      done()
+    })
+    it('handles multiply modifiers', (done) => {
+      let attribute = new Attribute({
+        base: 10,
+        current: 10,
+        modifiers: [{
+          id: 'foo',
+          type: 'multiply',
+          value: 10
+        }]
+      })
+      expect(attribute._calculateModifiedBase()).to.equal(100)
+      done()
+    })
+    it('handles divide modifiers', (done) => {
+      let attribute = new Attribute({
+        base: 10,
+        current: 10,
+        modifiers: [{
+          id: 'foo',
+          type: 'divide',
+          value: 10
+        }]
+      })
+      expect(attribute._calculateModifiedBase()).to.equal(1)
+      done()
+    })
+    it('handles set modifiers', (done) => {
+      let attribute = new Attribute({
+        base: 'test',
+        current: 'test',
+        modifiers: [{
+          id: 'foo',
+          type: 'set',
+          value: 'bar'
+        }]
+      })
+      expect(attribute._calculateModifiedBase()).to.equal('bar')
+      done()
+    })
+  })
 })

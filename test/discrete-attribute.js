@@ -3,74 +3,19 @@ const expect = require('chai').expect
 
 describe('DiscreteAttribute', () => {
   describe('#_recalculate', () => {
-    it('handles add modifiers', (done) => {
+    it('sets the result of _calculateModifiedBase to current', (done) => {
       let attribute = new DiscreteAttribute({
         base: 10,
         current: 10,
-        modifiers: [{
-          id: 'foo',
-          type: 'add',
-          value: 10
-        }]
+        modifiers: []
+      })
+      attribute.modifiers.push({
+        id: 'foo',
+        type: 'add',
+        value: 5
       })
       attribute._recalculate()
-      expect(attribute.current).to.equal(20)
-      done()
-    })
-    it('handles subtract modifiers', (done) => {
-      let attribute = new DiscreteAttribute({
-        base: 10,
-        current: 10,
-        modifiers: [{
-          id: 'foo',
-          type: 'subtract',
-          value: 10
-        }]
-      })
-      attribute._recalculate()
-      expect(attribute.current).to.equal(0)
-      done()
-    })
-    it('handles multiply modifiers', (done) => {
-      let attribute = new DiscreteAttribute({
-        base: 10,
-        current: 10,
-        modifiers: [{
-          id: 'foo',
-          type: 'multiply',
-          value: 10
-        }]
-      })
-      attribute._recalculate()
-      expect(attribute.current).to.equal(100)
-      done()
-    })
-    it('handles divide modifiers', (done) => {
-      let attribute = new DiscreteAttribute({
-        base: 10,
-        current: 10,
-        modifiers: [{
-          id: 'foo',
-          type: 'divide',
-          value: 10
-        }]
-      })
-      attribute._recalculate()
-      expect(attribute.current).to.equal(1)
-      done()
-    })
-    it('handles set modifiers', (done) => {
-      let attribute = new DiscreteAttribute({
-        base: 'test',
-        current: 'test',
-        modifiers: [{
-          id: 'foo',
-          type: 'set',
-          value: 'bar'
-        }]
-      })
-      attribute._recalculate()
-      expect(attribute.current).to.equal('bar')
+      expect(attribute.current).to.equal(15)
       done()
     })
   })
