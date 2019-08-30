@@ -5,9 +5,6 @@ const Event = require('../lib/event')
 const Strategy = require('../lib/strategy')
 const expect = require('chai').expect
 
-Strategy.define('true', () => true)
-Strategy.define('false', () => false)
-
 let trueCondition = {
   type: 'true',
   strategy: 'true'
@@ -19,6 +16,13 @@ let falseCondition = {
 }
 
 describe('Effect', () => {
+  before(() => {
+    Strategy.define('true', () => true)
+    Strategy.define('false', () => false)
+  })
+  after(() => {
+    Strategy._empty()
+  })
   describe('#isInvocable', () => {
     it('returns true if all conditions evaluate to true', (done) => {
       let effect = new Effect({

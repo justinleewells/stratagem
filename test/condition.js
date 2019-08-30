@@ -2,12 +2,16 @@ const Condition = require('../lib/condition')
 const Strategy = require('../lib/strategy')
 const expect = require('chai').expect
 
-Strategy.define('false', () => false)
-Strategy.define('true', () => true)
-Strategy.define('context', (context) => context.return)
-Strategy.define('values', (context, b) => b)
-
 describe('Condition', () => {
+  before(() => {
+    Strategy.define('false', () => false)
+    Strategy.define('true', () => true)
+    Strategy.define('context', (context) => context.return)
+    Strategy.define('values', (context, b) => b)
+  })
+  after(() => {
+    Strategy._empty()
+  })
   describe('#evaluate', () => {
     describe('true', () => {
       it('returns true for a truthy strategy', (done) => {
