@@ -23,4 +23,19 @@ describe('Utils', () => {
       done()
     })
   })
+  describe('#assignClass', () => {
+    it('returns an object with the provided class instantiated for each of the values in the provided object', (done) => {
+      let result = Utils.assignClass(A, {a: {x: 1, y: 2}, b: {x: 3, y: 4}})
+      expect(result.a.x).to.equal(1)
+      expect(result.a.y).to.equal(2)
+      expect(result.b.x).to.equal(3)
+      expect(result.b.y).to.equal(4)
+      done()
+    })
+    it('returns an empty object if a null value is provided', (done) => {
+      let result = Utils.assignClass(A, null)
+      expect(Object.keys(result).length).to.equal(0)
+      done()
+    })
+  })
 })
