@@ -3,6 +3,14 @@ const Strategy = require('../lib/strategy')
 const expect = require('chai').expect
 
 describe('Value', () => {
+  describe('#constructor', () => {
+    it('sets the type to static if a non-object argument is passed', (done) => {
+      let value = new Value(10)
+      expect(value.type).to.equal('static')
+      expect(value.static).to.equal(10)
+      done()
+    })
+  })
   describe('#transform', () => {
     it('returns the static value if it is a static type', (done) => {
       let value = new Value({
