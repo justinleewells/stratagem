@@ -19,6 +19,7 @@ describe('Effect', () => {
   before(() => {
     Strategy.define('true', () => true)
     Strategy.define('false', () => false)
+    Strategy.define('plusOne', (c, a) => a + 1)
   })
   after(() => {
     Strategy._empty()
@@ -67,6 +68,27 @@ describe('Effect', () => {
       expect(event.targets[0]).to.equal('b')
       expect(event.attributes.power.current).to.equal(10)
       expect(event.attributes.interruptible.current).to.equal(false)
+      done()
+    })
+    it('transforms all attribute values', (done) => {
+      let context = new Context({
+        properties: {
+          source: 'a',
+          targets: ['b']
+        }
+      })
+      let effect = new Effect({
+        type: 'foo',
+        attributes: {
+          power: {
+            type: 'strategy',
+            strategy: 'plusOne',
+            values: [10]
+          },
+        }
+      })
+      let event = effect.invoke(context)
+      expect(event.attributes.power.current).to.equal(11)
       done()
     })
   })
