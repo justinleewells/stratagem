@@ -23,6 +23,14 @@ describe('Utils', () => {
       done()
     })
   })
+  describe('#assignFunction', () => {
+    it('returns an object with the provided function called for each property of the provided object', (done) => {
+      let result = Utils.assignFunction((v) => v + 1, {a: 1, b: 2})
+      expect(result.a).to.equal(2)
+      expect(result.b).to.equal(3)
+      done()
+    })
+  })
   describe('#assignClass', () => {
     it('returns an object with the provided class instantiated for each of the values in the provided object', (done) => {
       let result = Utils.assignClass(A, {a: {x: 1, y: 2}, b: {x: 3, y: 4}})
