@@ -21,7 +21,6 @@ const selection = new Selection({
 describe('Action', () => {
   before(() => {
     Strategy.define('value', (context, value) => value)
-    Strategy.define('oneAndTwoSet', (context) => context.properties.one == 1 && context.properties.two == 2)
   })
   after(() => {
     Strategy._empty()
