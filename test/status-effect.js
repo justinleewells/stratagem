@@ -29,6 +29,9 @@ const selection = new Selection({
 })
 
 describe('StatusEffect', () => {
+  beforeEach(() => {
+    StatusEffect._empty()
+  })
   before(() => {
     Strategy.define('true', () => true)
     Strategy.define('value', (context, value) => value)
@@ -38,7 +41,7 @@ describe('StatusEffect', () => {
   })
   describe('#isInvocable', () => {
     it('returns true if all conditions for the given event type evaluate to true', (done) => {
-      let statusEffect = new StatusEffect({
+      StatusEffect.define(0, {
         events: {
           foo: {
             conditions: [
@@ -48,11 +51,12 @@ describe('StatusEffect', () => {
           }
         }
       }) 
+      let statusEffect = StatusEffect.create(0, {})
       expect(statusEffect.isInvocable('foo', {})).to.be.true
       done()
     })
     it('returns false if any conditions for the given event type evaluate to false', (done) => {
-      let statusEffect = new StatusEffect({
+      StatusEffect.define(0, {
         events: {
           foo: {
             conditions: [
@@ -62,18 +66,20 @@ describe('StatusEffect', () => {
           }
         }
       }) 
+      let statusEffect = StatusEffect.create(0, {})
       expect(statusEffect.isInvocable('foo', {})).to.be.false
       done()
     })
     it('returns false if the given event does not exist', (done) => {
-      let statusEffect = new StatusEffect({})
+      StatusEffect.define(0, {})
+      let statusEffect = StatusEffect.create(0, {})
       expect(statusEffect.isInvocable('foo', {})).to.be.false
       done()
     })
   })
   describe('#invoke', () => {
     it('runs all initializers for the given event type', (done) => {
-      let statusEffect = new StatusEffect({
+      StatusEffect.define(0, {
         events: {
           foo: {
             initializers: {
@@ -99,6 +105,7 @@ describe('StatusEffect', () => {
           }
         }
       })
+      let statusEffect = StatusEffect.create(0, {})
       let spy = sinon.spy(Result.prototype, 'invoke')
       let events = statusEffect.invoke('foo', context, selection)
       expect(spy.getCall(0).args[0].properties.one).to.equal(1)
@@ -106,7 +113,7 @@ describe('StatusEffect', () => {
       done()
     })
     it('returns the events from each invoked result for the given event', (done) => {
-      let statusEffect = new StatusEffect({
+      StatusEffect.define(0, {
         events: {
           foo: {
             results: [
@@ -133,6 +140,7 @@ describe('StatusEffect', () => {
           }
         }
       })
+      let statusEffect = StatusEffect.create(0, {})
       let events = statusEffect.invoke('foo', context, selection)
       let eventOne = events[0][0][0]
       expect(eventOne).to.be.instanceOf(Event)

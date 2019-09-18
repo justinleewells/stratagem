@@ -19,6 +19,9 @@ const selection = new Selection({
 })
 
 describe('Action', () => {
+  beforeEach(() => {
+    Action._empty()
+  })
   before(() => {
     Strategy.define('value', (context, value) => value)
   })
@@ -27,8 +30,7 @@ describe('Action', () => {
   })
   describe('#invoke', () => {
     it('runs all initializers', (done) => {
-      let action = new Action({
-        id: 0,
+      Action.define(0, {
         initializers: {
           one: {
             type: 'strategy',
@@ -50,6 +52,7 @@ describe('Action', () => {
           }
         ]
       })
+      let action = Action.create(0, {})
       let spy = sinon.spy(Result.prototype, 'invoke')
       let events = action.invoke(context, selection)
       expect(spy.getCall(0).args[0].properties.one).to.equal(1)
@@ -57,8 +60,7 @@ describe('Action', () => {
       done()
     })
     it('returns the events from each invoked result', (done) => {
-      let action = new Action({
-        id: 0,
+      Action.define(0, {
         results: [
           {
             selection: 'foo',
@@ -81,6 +83,7 @@ describe('Action', () => {
           }
         ]
       })
+      let action = Action.create(0, {})
       let events = action.invoke(context, selection)
       let eventOne = events[0][0][0]
       expect(eventOne).to.be.instanceOf(Event)

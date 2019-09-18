@@ -13,6 +13,9 @@ const falseCondition = {
 }
 
 describe('Modifier', () => {
+  beforeEach(() => {
+    Modifier._empty()
+  })
   before(() => {
     Strategy.define('true', () => true)
   })
@@ -21,22 +24,24 @@ describe('Modifier', () => {
   })
   describe('#isInvocable', () => {
     it('returns true if all conditions evaluate to true', (done) => {
-      let modifier = new Modifier({
+      Modifier.define(0, {
         conditions: [
           trueCondition,
           trueCondition
         ]
       })
+      let modifier = Modifier.create(0, {})
       expect(modifier.isInvocable({})).to.be.true
       done()
     })
     it('returns false if any conditions evaluate to false', (done) => {
-      let modifier = new Modifier({
+      Modifier.define(0, {
         conditions: [
           trueCondition,
           falseCondition
         ]
       })
+      let modifier = Modifier.create(0, {})
       expect(modifier.isInvocable({})).to.be.false
       done()
     })
