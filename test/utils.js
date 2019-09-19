@@ -30,6 +30,11 @@ describe('Utils', () => {
       expect(result.b).to.equal(3)
       done()
     })
+    it('returns an empty object if a null value is provided', (done) => {
+      let result = Utils.assignFunction((v) => v + 1, null)
+      expect(Object.keys(result).length).to.equal(0)
+      done()
+    })
   })
   describe('#assignClass', () => {
     it('returns an object with the provided class instantiated for each of the values in the provided object', (done) => {
