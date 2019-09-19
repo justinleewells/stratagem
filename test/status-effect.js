@@ -29,7 +29,7 @@ const selection = new Selection({
 })
 
 describe('StatusEffect', () => {
-  beforeEach(() => {
+  afterEach(() => {
     StatusEffect._empty()
   })
   before(() => {
