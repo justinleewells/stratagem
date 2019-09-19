@@ -85,14 +85,13 @@ describe('Result', () => {
       })
       let events = result.invoke(context, selection)
       expect(events.length).to.equal(2)
-      let event = events[0][0]
+      let event = events[0]
       expect(event.type).to.equal('damage')
       expect(event.source).to.equal('a')
       expect(event.targets.length).to.equal(1)
       expect(event.targets[0]).to.equal('b')
       expect(event.attributes.power.current).to.equal(10)
       expect(event.attributes.interruptible.current).to.be.false
-      expect(events[1][0].targets[0]).to.equal('c')
       done()
     })
     it('returns no events if the selector entry does not exist', (done) => {

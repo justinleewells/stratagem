@@ -142,10 +142,10 @@ describe('StatusEffect', () => {
       })
       let statusEffect = StatusEffect.create(0, {})
       let events = statusEffect.invoke('foo', context, selection)
-      let eventOne = events[0][0][0]
+      let eventOne = events[0]
       expect(eventOne).to.be.instanceOf(Event)
       expect(eventOne.type).to.equal('damage')
-      let eventTwo = events[1][0][0]
+      let eventTwo = events[1]
       expect(eventTwo).to.be.instanceOf(Event)
       expect(eventTwo.type).to.equal('interrupt')
       done()
