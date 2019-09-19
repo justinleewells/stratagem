@@ -170,6 +170,26 @@ describe('Unit', () => {
       done()
     })
   })
+  describe('#getModifiers', () => {
+    it('returns the modifiers if the specified array exists', (done) => {
+      let unit = new Unit({
+        modifiers: {
+          foo: [Modifier.create(0, {})]
+        }
+      })
+      expect(unit.getModifiers('foo').length).to.equal(1)
+      done()
+    })
+    it('returns an empty array if the specific array does not exist', (done) => {
+      let unit = new Unit({
+        modifiers: {
+          foo: [Modifier.create(0, {})]
+        }
+      })
+      expect(unit.getModifiers('bar').length).to.equal(0)
+      done()
+    })
+  })
   describe('#addFlag', () => {
     it('adds the flag to the flags array', (done) => {
       let unit = new Unit({}) 
