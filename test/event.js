@@ -23,6 +23,15 @@ describe('Event', () => {
       done()
     })
   })
+  describe('#setOrigin', () => {
+    it('sets the origin to the provided object', (done) => {
+      let event = new Event({})
+      let origin = {}
+      event.setOrigin(origin)
+      expect(event.origin).to.equal(origin)
+      done()
+    })
+  })
   describe('#addChild', () => {
     it('adds the child event to the children array', (done) => {
       let parent = new Event({})
