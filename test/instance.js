@@ -13,6 +13,20 @@ describe('Instance', () => {
       done()
     })
   })
+  describe('#findUnit', () => {
+    it('returns the unit if it exists', (done) => {
+      let unit = new Unit({id: 0})
+      let instance = new Instance([unit])
+      expect(instance.findUnit(0)).to.equal(unit)
+      done()
+    })
+    it('returns null if the unit does not exist', (done) => {
+      let unit = new Unit({id: 0})
+      let instance = new Instance([unit])
+      expect(instance.findUnit(1)).to.equal(undefined)
+      done()
+    })
+  })
   describe('#removeUnit', () => {
     it('removes the unit from the units array', (done) => {
       let instance = new Instance([new Unit({id: 0})])
