@@ -43,7 +43,7 @@ describe('EventHandler', () => {
               type: 'true',
               strategy: 'con_isTarget'
             }
-          ]
+          ],
           effects: [
             {
               type: 'damage',
