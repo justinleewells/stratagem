@@ -4,9 +4,8 @@ const expect = require('chai').expect
 
 describe('Value', () => {
   describe('#constructor', () => {
-    it('sets the type to static if a non-object argument is passed', (done) => {
+    it('sets the static value if a non-object argument is passed', (done) => {
       let value = new Value(10)
-      expect(value.type).to.equal('static')
       expect(value.static).to.equal(10)
       done()
     })
