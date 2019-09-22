@@ -2,6 +2,14 @@ const DiscreteAttribute = require('../lib/discrete-attribute')
 const expect = require('chai').expect
 
 describe('DiscreteAttribute', () => {
+  describe('#constructor', () => {
+    it('accepts a single number as an argument', (done) => {
+      let attribute = new DiscreteAttribute(10)
+      expect(attribute.base).to.equal(10)
+      expect(attribute.current).to.equal(10)
+      done()
+    })
+  })
   describe('#_recalculate', () => {
     it('sets the result of _calculateModifiedBase to current', (done) => {
       let attribute = new DiscreteAttribute({
