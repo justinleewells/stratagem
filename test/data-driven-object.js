@@ -72,4 +72,16 @@ describe('DataDrivenObject', () => {
       done()
     })
   })
+  describe('#get', () => {
+    it('returns the data that was previously defined', (done) => {
+      A.define(0, {a: 'foo'})
+      let data = A.get(0)
+      expect(data.a).to.equal('foo+a')
+      done()
+    })
+    it('throws an error if the data is not defined', (done) => {
+      expect(() => { A.get(0) }).to.throw('A+0 is undefined')
+      done()
+    })
+  })
 })

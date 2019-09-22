@@ -10,7 +10,8 @@ const expect = require('chai').expect
 describe('Unit', () => {
   before(() => {
     Action.define(0, {})
-    Modifier.define(0, {})
+    Modifier.define(0, {key: 'foo'})
+    Modifier.define(1, {key: 'foo'})
     StatusEffect.define(0, {})
   })
   after(() => {
@@ -96,40 +97,40 @@ describe('Unit', () => {
   describe('#addModifier', () => {
     it('adds the modifier to the specified array', (done) => {
       let unit = new Unit({})
-      unit.addModifier('foo', Modifier.create(0, {}))
+      let modifier = Modifier.create(0, {})
+      unit.addModifier(Modifier.create(0, {}))
       expect(unit.modifiers.foo[0].id).to.equal(0)
       done()
     })
   })
   describe('#removeModifier', () => {
-    it('removes the modifier from the specified array', (done) => {
+    it('removes the modifier', (done) => {
       let unit = new Unit({
         modifiers: {
           foo: [Modifier.create(0, {})]
         }
       })
-      unit.removeModifier('foo', 0)
+      unit.removeModifier(0)
       expect(unit.modifiers.foo.length).to.equal(0)
       done()
     })
-    it('does nothing if a modifier with the provided id does not exist within the specified array', (done) => {
+    it('does nothing if a modifier with the provided id does not exist', (done) => {
       let unit = new Unit({
         modifiers: {
           foo: [Modifier.create(0, {})]
         }
       })
-      unit.removeModifier('foo', 1)
+      unit.removeModifier(1)
       expect(unit.modifiers.foo.length).to.equal(1)
       done()
     })
-    it('does nothing if the specified array does not exist within the modifiers object', (done) => {
+    it('throws an error if the modifier is not defined', (done) => {
       let unit = new Unit({
         modifiers: {
           foo: [Modifier.create(0, {})]
         }
       })
-      unit.removeModifier('bar', 0)
-      expect(unit.modifiers.foo.length).to.equal(1)
+      expect(() => { unit.removeModifier(100) }).to.throw('Modifier+100 is undefined')
       done()
     })
     it('supports custom comparators', (done) => {
@@ -138,7 +139,7 @@ describe('Unit', () => {
           foo: [Modifier.create(0, {foo: 'bar'})]
         }
       })
-      unit.removeModifier('foo', {foo: 'bar'}, (e, obj) => {
+      unit.removeModifier(0, {foo: 'bar'}, (e, obj) => {
         return e.state.foo == obj.foo
       })
       expect(unit.modifiers.foo.length).to.equal(0)
@@ -146,27 +147,31 @@ describe('Unit', () => {
     })
   })
   describe('#hasModifier', () => {
-    it('returns true if the modifier exists within the specified array', (done) => {
+    it('returns true if the modifier exists', (done) => {
       let unit = new Unit({
         modifiers: {
           foo: [Modifier.create(0, {})]
         }
       })
-      expect(unit.hasModifier('foo', 0)).to.be.true
+      expect(unit.hasModifier(0)).to.be.true
       done()
     })
-    it('returns false if the modifier does not exist within the specified array', (done) => {
+    it('returns false if the modifier does not exist', (done) => {
       let unit = new Unit({
         modifiers: {
           foo: [Modifier.create(0, {})]
         }
       })
-      expect(unit.hasModifier('foo', 1)).to.be.false
+      expect(unit.hasModifier(1)).to.be.false
       done()
     })
-    it('returns false if the specified array does not exist within the modifiers object', (done) => {
-      let unit = new Unit({})
-      expect(unit.hasModifier('foo', 0)).to.be.false
+    it('throws an error if the modifier is not defined', (done) => {
+      let unit = new Unit({
+        modifiers: {
+          foo: [Modifier.create(0, {})]
+        }
+      })
+      expect(() => { unit.hasModifier(100) }).to.throw('Modifier+100 is undefined')
       done()
     })
   })
