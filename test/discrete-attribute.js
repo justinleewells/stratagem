@@ -28,7 +28,7 @@ describe('DiscreteAttribute', () => {
     })
   })
   describe('#toJSON', () => {
-    it('returns a JSON object with discrete as the type', (done) => {
+    it('returns a JSON object', (done) => {
       let attribute = new DiscreteAttribute({
         base: 10,
         current: 15,
@@ -39,12 +39,12 @@ describe('DiscreteAttribute', () => {
         }]
       })
       let json = attribute.toJSON()
-      expect(json.type).to.equal('discrete')
       expect(json.base).to.equal(10)
       expect(json.current).to.equal(15)
       expect(json.modifiers[0].id).to.equal('foo')
       expect(json.modifiers[0].type).to.equal('add')
       expect(json.modifiers[0].value).to.equal(5)
+      expect(json instanceof Object).to.be.true
       done()
     })
   })

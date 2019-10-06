@@ -65,7 +65,7 @@ describe('ContinuousAttribute', () => {
     })
   })
   describe('#toJSON', () => {
-    it('returns a JSON object with continuous as the type', (done) => {
+    it('returns a JSON object', (done) => {
       let attribute = new ContinuousAttribute({
         base: 10,
         current: 15,
@@ -78,7 +78,6 @@ describe('ContinuousAttribute', () => {
         }]
       })
       let json = attribute.toJSON()
-      expect(json.type).to.equal('continuous')
       expect(json.base).to.equal(10)
       expect(json.current).to.equal(15)
       expect(json.max).to.equal(15)
@@ -86,6 +85,7 @@ describe('ContinuousAttribute', () => {
       expect(json.modifiers[0].id).to.equal('foo')
       expect(json.modifiers[0].type).to.equal('add')
       expect(json.modifiers[0].value).to.equal(5)
+      expect(json instanceof Object).to.be.true
       done()
     })
   })

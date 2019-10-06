@@ -27,6 +27,17 @@ class B extends DataDrivenObject {
   }
 }
 
+class C {
+  constructor({foo}) {
+    this.foo = foo
+  }
+  toJSON() {
+    return {
+      foo: this.foo
+    }
+  }
+}
+
 describe('DataDrivenObject', () => {
   beforeEach(() => {
     DataDrivenObject._empty()
@@ -81,6 +92,17 @@ describe('DataDrivenObject', () => {
     })
     it('throws an error if the data is not defined', (done) => {
       expect(() => { A.get(0) }).to.throw('A+0 is undefined')
+      done()
+    })
+  })
+  describe('#toJSON', () => {
+    it('calls toJSON on the state', (done) => {
+      A.define(1, {a: 'foo'})
+      let spy = sinon.spy(C.prototype, 'toJSON')
+      let a = A.create(1, new C({foo: 1}))
+      let json = a.toJSON()
+      expect(spy.calledOnce).to.be.true
+      expect(json.state.foo).to.equal(1)
       done()
     })
   })
