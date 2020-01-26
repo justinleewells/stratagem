@@ -5,7 +5,7 @@ module.exports = Object.freeze({
   Condition: require('./lib/condition'),
   Context: require('./lib/context'),
   ContinuousAttribute: require('./lib/continuous-attribute'),
-  DataDrivenObject: require('./lib/data-driven-object'),
+  GameObject: require('./lib/game-object'),
   DiscreteAttribute: require('./lib/discrete-attribute'),
   Effect: require('./lib/effect'),
   Event: require('./lib/event'),
