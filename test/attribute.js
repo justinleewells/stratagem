@@ -96,6 +96,19 @@ describe('Attribute', () => {
       expect(attribute._calculateModifiedBase()).to.equal(20)
       done()
     })
+    it('handles addPct modifiers', (done) => {
+      let attribute = new Attribute({
+        base: 10,
+        current: 10,
+        modifiers: [{
+          id: 'foo',
+          type: 'addPct',
+          value: 0.5
+        }]
+      })
+      expect(attribute._calculateModifiedBase()).to.equal(15)
+      done()
+    })
     it('handles subtract modifiers', (done) => {
       let attribute = new Attribute({
         base: 10,
@@ -109,30 +122,17 @@ describe('Attribute', () => {
       expect(attribute._calculateModifiedBase()).to.equal(0)
       done()
     })
-    it('handles multiply modifiers', (done) => {
+    it('handles subtractPct modifiers', (done) => {
       let attribute = new Attribute({
         base: 10,
         current: 10,
         modifiers: [{
           id: 'foo',
-          type: 'multiply',
-          value: 10
+          type: 'subtractPct',
+          value: 0.5
         }]
       })
-      expect(attribute._calculateModifiedBase()).to.equal(100)
-      done()
-    })
-    it('handles divide modifiers', (done) => {
-      let attribute = new Attribute({
-        base: 10,
-        current: 10,
-        modifiers: [{
-          id: 'foo',
-          type: 'divide',
-          value: 10
-        }]
-      })
-      expect(attribute._calculateModifiedBase()).to.equal(1)
+      expect(attribute._calculateModifiedBase()).to.equal(5)
       done()
     })
     it('handles set modifiers', (done) => {

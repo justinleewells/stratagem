@@ -1,9 +1,10 @@
-const DataDrivenObject = require('../lib/data-driven-object')
+const GameObject = require('../lib/game-object')
+const Serializable = require('serializable-class')
 
 const expect = require('chai').expect
 const sinon = require('sinon')
 
-class A extends DataDrivenObject {
+class A extends GameObject {
   constructor(id, state, data) {
     super(id, state)
     this.data = data
@@ -14,8 +15,9 @@ class A extends DataDrivenObject {
     }
   }
 }
+Serializable.register(A)
 
-class B extends DataDrivenObject {
+class B extends GameObject {
   constructor(id, state, data) {
     super(id, state)
     this.data = data
@@ -26,26 +28,16 @@ class B extends DataDrivenObject {
     }
   }
 }
+Serializable.register(B)
 
-class C {
-  constructor({foo}) {
-    this.foo = foo
-  }
-  toJSON() {
-    return {
-      foo: this.foo
-    }
-  }
-}
-
-describe('DataDrivenObject', () => {
+describe('GameObject', () => {
   beforeEach(() => {
-    DataDrivenObject._empty()
+    GameObject._empty()
   })
   describe('#define', () => {
     it('saves the data in the objects object', (done) => {
       A.define(0, {})
-      expect(DataDrivenObject._objects().A[0]).to.not.be.null
+      expect(GameObject._objects().A[0]).to.not.be.null
       done()
     })
     it('throws an error if the provided id is already defined', (done) => {
@@ -92,17 +84,6 @@ describe('DataDrivenObject', () => {
     })
     it('throws an error if the data is not defined', (done) => {
       expect(() => { A.get(0) }).to.throw('A+0 is undefined')
-      done()
-    })
-  })
-  describe('#toJSON', () => {
-    it('calls toJSON on the state', (done) => {
-      A.define(1, {a: 'foo'})
-      let spy = sinon.spy(C.prototype, 'toJSON')
-      let a = A.create(1, new C({foo: 1}))
-      let json = a.toJSON()
-      expect(spy.calledOnce).to.be.true
-      expect(json.state.foo).to.equal(1)
       done()
     })
   })

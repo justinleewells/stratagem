@@ -15,7 +15,9 @@
     "mocha": "^6.2.0",
     "sinon": "^7.4.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "serializable-class": "^1.0.1"
+  },
   "scripts": {
     "test": "mocha"
   }
