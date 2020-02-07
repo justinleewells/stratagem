@@ -12,6 +12,7 @@ describe('Event', () => {
       })
       expect(event.attributes.power.current).to.equal(10)
       expect(event.attributes.interruptible.current).to.be.false
+      console.log(event.serialize());
       done()
     })
   })

@@ -2,7 +2,6 @@ const Unit = require('../lib/unit')
 const DiscreteAttribute = require('../lib/discrete-attribute')
 const Action = require('../lib/action')
 const Modifier = require('../lib/modifier')
-const Flag = require('../lib/flag')
 const StatusEffect = require('../lib/status-effect')
 
 const expect = require('chai').expect
@@ -45,20 +44,21 @@ describe('Unit', () => {
     })
   })
   describe('#addAction', () => {
-    it('adds the action to the actions array', (done) => {
+    it('adds the action to the actions object', (done) => {
       let unit = new Unit({})
-      unit.addAction(Action.create(0, {}))
-      expect(unit.actions[0].id).to.equal(0)
+      let action = Action.create(0, {})
+      unit.addAction(action)
+      expect(unit.actions[0]).to.equal(action)
       done()
     })
   })
   describe('#removeAction', () => {
-    it('removes the action from the actions array', (done) => {
+    it('removes the action from the actions object', (done) => {
       let unit = new Unit({
-        actions: [Action.create(0, {})]
+        actions: {0: Action.create(0, {})}
       })
       unit.removeAction(0)
-      expect(unit.actions.length).to.equal(0)
+      expect(unit.actions[0]).to.equal(undefined)
       done()
     })
     it('does nothing if an action with the provided id does not exist', (done) => {
@@ -71,12 +71,12 @@ describe('Unit', () => {
     })
     it('supports custom comparators', (done) => {
       let unit = new Unit({
-        actions: [Action.create(0, {foo: 'bar'})]
+        actions: {0: Action.create(0, {foo: 'bar'})}
       })
       unit.removeAction({foo: 'bar'}, (e, obj) => {
         return e.state.foo == obj.foo
       })
-      expect(unit.actions.length).to.equal(0)
+      expect(unit.actions[0]).to.equal(undefined)
       done()
     })
   })
@@ -196,40 +196,48 @@ describe('Unit', () => {
     })
   })
   describe('#addFlag', () => {
-    it('adds the flag to the flags array', (done) => {
+    it('sets the id on the flags object equal to 1 if it does not exist', (done) => {
       let unit = new Unit({}) 
-      unit.addFlag(new Flag(0))
-      expect(unit.flags[0].id).to.equal(0)
+      unit.addFlag(0)
+      expect(unit.flags[0]).to.equal(1)
+      done()
+    })
+    it('increments the id on the flags object if it already exists', (done) => {
+      let unit = new Unit({
+        flags: {0: 1}
+      })
+      unit.addFlag(0)
+      expect(unit.flags[0]).to.equal(2)
       done()
     })
   })
   describe('#removeFlag', () => {
-    it('removes the flag from the flags array', (done) => {
+    it('deletes the id on the flags object if it is equal to 1', (done) => {
       let unit = new Unit({
-        flags: [new Flag(0)]
+        flags: {0: 1}
       })
       unit.removeFlag(0)
-      expect(unit.flags.length).to.equal(0)
+      expect(unit.flags[0]).to.equal(undefined)
       done()
     })
     it('does nothing if a flag with the provided id does not exist', (done) => {
       let unit = new Unit({
-        flags: [new Flag(0)]
+        flags: {0: 1}
       })
       unit.removeFlag(1)
-      expect(unit.flags.length).to.equal(1)
+      expect(unit.flags[1]).to.equal(undefined)
       done()
     })
   })
   describe('#hasFlag', () => {
-    it('returns true if the flag exists within the flags array', (done) => {
+    it('returns true if the flag exists within the flags object', (done) => {
       let unit = new Unit({
-        flags: [new Flag(0)]
+        flags: {0: 1}
       })
       expect(unit.hasFlag(0)).to.be.true
       done()
     })
-    it('returns false if the flag does not exist within the flags array', (done) => {
+    it('returns false if the flag does not exist within the flags object', (done) => {
       let unit = new Unit({})
       expect(unit.hasFlag(0)).to.be.false
       done()

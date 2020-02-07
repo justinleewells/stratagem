@@ -51,7 +51,7 @@ describe('Effect', () => {
       let context = new Context({
         properties: {
           source: 'a',
-          targets: ['b']
+          target: 'b'
         }
       })
       let effect = new Effect({
@@ -65,7 +65,7 @@ describe('Effect', () => {
       expect(event instanceof Event).to.be.true
       expect(event.type).to.equal('foo')
       expect(event.source).to.equal('a')
-      expect(event.targets[0]).to.equal('b')
+      expect(event.target).to.equal('b')
       expect(event.attributes.power.current).to.equal(10)
       expect(event.attributes.interruptible.current).to.equal(false)
       done()
@@ -74,7 +74,7 @@ describe('Effect', () => {
       let context = new Context({
         properties: {
           source: 'a',
-          targets: ['b']
+          target: 'b'
         }
       })
       let effect = new Effect({

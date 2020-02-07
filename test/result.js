@@ -18,8 +18,8 @@ describe('Result', () => {
   before(() => {
     Strategy.define('true', () => true)
     Strategy.define('false', () => false)
-    Strategy.define('idEqualsB', (context) => context.properties.targets.indexOf('b') > -1)
-    Strategy.define('idEqualsC', (context) => context.properties.targets.indexOf('c') > -1)
+    Strategy.define('idEqualsB', (context) => context.properties.target == 'b')
+    Strategy.define('idEqualsC', (context) => context.properties.target == 'c')
   })
   after(() => {
     Strategy._empty()
@@ -88,8 +88,7 @@ describe('Result', () => {
       let event = events[0]
       expect(event.type).to.equal('damage')
       expect(event.source).to.equal('a')
-      expect(event.targets.length).to.equal(1)
-      expect(event.targets[0]).to.equal('b')
+      expect(event.target).to.equal('b')
       expect(event.attributes.power.current).to.equal(10)
       expect(event.attributes.interruptible.current).to.be.false
       done()

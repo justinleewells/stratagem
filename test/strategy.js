@@ -15,7 +15,7 @@ describe('Strategy', () => {
     it('throws an error if the strategy is already defined', (done) => {
       let foo = () => 'foo'
       Strategy.define('foo', foo)
-      expect(() => { Strategy.define('foo', foo) }).to.throw('Strategy foo is already defined')
+      expect(() => { Strategy.define('foo', foo) }).to.throw('Strategy+foo is already defined')
       done()
     })
   })
@@ -39,7 +39,7 @@ describe('Strategy', () => {
       done()
     })
     it('throws an error if the strategy is undefined', (done) => {
-      expect(() => { Strategy.invoke('foo', {}, []) }).to.throw('Strategy foo is undefined')
+      expect(() => { Strategy.invoke('foo', {}, []) }).to.throw('Strategy+foo is undefined')
       done()
     })
   })

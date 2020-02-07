@@ -14,9 +14,7 @@ const createUnit = (id, team) => {
 describe('EventHandler', () => {
   beforeEach(() => {
     EventHandler.define('damage', (instance, event) => {
-      event.targets.forEach((target) => {
-        target.attributes.hp.subtract(event.attributes.value.current)
-      })
+      event.target.attributes.hp.subtract(event.attributes.value.current)
     })
   })
   afterEach(() => {
@@ -30,8 +28,8 @@ describe('EventHandler', () => {
     })
     Strategy.define('con_isTarget', (context) => {
       let source = context.properties.source
-      let targets = context.properties.event.targets
-      return targets.indexOf(source) > -1
+      let target = context.properties.event.target
+      return target == source
     })
     Modifier.define(0, {
       selector: 'sel_source',
