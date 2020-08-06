@@ -13,8 +13,5 @@
   "main": "./index.js",
   "dependencies": {
     "serializable-object": "^1.2.0"
-  },
-  "scripts": {
-    "test": "mocha"
   }
 }
