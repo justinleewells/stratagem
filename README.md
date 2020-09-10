@@ -52,7 +52,7 @@ Action.define('attack', {
   }
 })
 ```
-Next, `Units` are initialized with the `Attributes` and `Actions`:
+Next, `Units` are initialized with `Attributes` and `Actions`:
 ```javascript
 let unitA = new Unit({
   team: 0,
