@@ -16,7 +16,7 @@ npm install --save stratagem
 The primary goal of `stratagem` is to provide a minimal library for modeling turn-based role-playing games so developers can quickly prototype ideas. To achieve this goal, `stratagem` heavily utilizes code reuse and data-driven programming.
 
 ### Get Started
-To begin, developers define the rules of battle known as `Executors`:
+To begin, the rules of battle are defined as `Executors`:
 ```javascript
 Executor.define('damage', (context) => {
   let {instance, event} = context
