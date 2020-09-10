@@ -83,7 +83,7 @@ instance.addUnit(unitB)
 Finally, `Actions` are used and the resulting `Events` are executed by the `Instance`:
 ```javascript
 let action = unitA.actions.attack
-let events = action.use(unitA, instance)
+let results = action.use(unitA, instance)
 results.forEach((result) => {
   result.events.forEach((event) => instance.execute(event))
 })
