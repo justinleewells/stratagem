@@ -1,5 +1,15 @@
-# Stratagem
-The goal of this project is to create a lightweight module for rapidly developing turn-based RPG games. Stratagem strives to be as unopinionated as possible, so you have the freedom to make the game you want.
+<div align="center">
+  <h1>stratagem</h1>
+  <p>stratagem is a lightweight JavaScript library for modeling turn-based role-playing games.</p>
+</div>
 
-### Under Construction
-This is a WIP and while you're free to keep up with the development, it is nowhere near ready to be used.
+## Table of Contents
+1. [Install](#install)
+<div align="center">
+  <h2>Install</h2>
+</div>
+
+Install with npm:
+```bash
+npm install --save stratagem
+```
