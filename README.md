@@ -5,10 +5,7 @@
 
 ## Table of Contents
 1. [Install](#install)
-<div align="center">
-  <h2>Install</h2>
-</div>
-
+## Install
 Install with npm:
 ```bash
 npm install --save stratagem
