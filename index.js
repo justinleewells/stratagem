@@ -1,7 +1,6 @@
 module.exports = Object.freeze({
   Action: require('./lib/action'),
   DiscreteAttribute: require('./lib/discrete-attribute'),
-  Config: require('./lib/config'),
   ContinuousAttribute: require('./lib/continuous-attribute'),
   Handler: require('./lib/handler'),
   Instance: require('./lib/instance'),
