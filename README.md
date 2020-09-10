@@ -32,7 +32,7 @@ Selector.define('enemy', (source, instance, input) => {
   }
 })
 ```
-After a `Selector` is defined, `Actions` can be created:
+After defining a `Selector`, `Actions` can be defined:
 ```javascript
 Action.define('attack', {
   selector: 'enemy',
@@ -52,7 +52,7 @@ Action.define('attack', {
   }
 })
 ```
-Next, `Units` are initialized with the attributes and actions:
+Next, `Units` are initialized with the `Attributes` and `Actions`:
 ```javascript
 let unitA = new Unit({
   team: 0,
