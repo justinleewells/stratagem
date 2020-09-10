@@ -1,6 +1,6 @@
 <div align="center">
   <h1>stratagem</h1>
-  <p>a lightweight JavaScript library for modeling turn-based role-playing games</p>
+  <p>a lightweight javascript library for modeling turn-based role-playing games</p>
 </div>
 
 ## Table of Contents
