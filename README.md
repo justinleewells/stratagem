@@ -1,6 +1,6 @@
 <div align="center">
-  <h1>stratagem</h1>
-  <p>stratagem is a lightweight JavaScript library for modeling turn-based role-playing games. It utilizes data-driven programming techniques to increase developer productivity.</p>
+  <h1>Stratagem</h1>
+  <p>A lightweight JavaScript library for simulating turn-based role-playing game battles.</p>
 </div>
 
 ## Table of Contents

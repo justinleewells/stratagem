@@ -1,17 +1,19 @@
-module.exports = Object.freeze({
-  Action: require('./lib/action'),
-  DiscreteAttribute: require('./lib/discrete-attribute'),
-  ContinuousAttribute: require('./lib/continuous-attribute'),
-  Handler: require('./lib/handler'),
-  Instance: require('./lib/instance'),
-  Strategy: require('./lib/strategy'),
-  Predicate: require('./lib/predicate'),
-  Executor: require('./lib/executor'),
-  Selector: require('./lib/selector'),
-  Unit: require('./lib/unit'),
-  Utils: require('./lib/utils'),
-  GameObject: require('./lib/game-object'),
-  Event: require('./lib/event'),
-  StatusEffect: require('./lib/status-effect'),
-  SerializableObject: require('serializable-object')
-})
+import Attribute from "./lib/attribute.js";
+import Event from "./lib/event.js";
+import Executor from "./lib/executor.js";
+import Instance from "./lib/instance.js";
+import ModifierTypes from "./lib/modifier-types.js";
+import Resource from "./lib/resource.js";
+import Teams from "./lib/teams.js";
+import Unit from "./lib/unit.js";
+
+export {
+  Attribute,
+  Event,
+  Executor,
+  Instance,
+  ModifierTypes,
+  Resource,
+  Teams,
+  Unit,
+};
