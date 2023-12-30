@@ -4,9 +4,13 @@
 </div>
 
 ## Table of Contents
+
 1. [Install](#install)
+
 ## Install
+
 Install with npm:
+
 ```bash
 npm install --save stratagem
 ```
