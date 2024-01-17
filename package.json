@@ -1,6 +1,6 @@
 {
   "name": "stratagem",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A lightweight node module for simulating turn-based role-playing game battles",
   "keywords": [
     "turn-based",
