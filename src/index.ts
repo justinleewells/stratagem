@@ -11,6 +11,7 @@ export * from './types/index.js';
 export { Attribute } from './core/Attribute.js';
 export { Resource } from './core/Resource.js';
 export { Entity } from './core/Entity.js';
+export { Effect, type EffectContext, type EffectResult } from './core/Effect.js';
 
 // Modifier system
 export { Modifier } from './modifiers/Modifier.js';
@@ -20,14 +21,8 @@ export { ModifierStack } from './modifiers/ModifierStack.js';
 // export * from './combat/CombatController.js';
 // export * from './combat/TurnStrategy.js';
 
-// Effects (to be implemented)
-// export * from './effects/Effect.js';
-
 // Targeting (to be implemented)
 // export * from './targeting/TargetSelector.js';
-
-// Events (to be implemented)
-// export * from './events/EventBus.js';
 
 // Formula
 export * from './formula/Formula.js';
