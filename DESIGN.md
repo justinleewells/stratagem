@@ -117,20 +117,44 @@ Temporary modifier source with lifecycle:
 - **Tick Behavior**: Applied at start/end of turn
 - **Stacking Rules**: `replace` (default), `stack` (duplicate), `refresh` (reset duration)
 - **Effects on Tick**: Can deal damage, heal, or trigger other effects each turn
+- **Event Listeners**: Can react to events (NEW)
 
-Example: Poison deals 5 damage per turn for 3 turns.
+**Examples:**
+- **Simple**: Poison deals 5 damage per turn for 3 turns
+- **Reactive**: Thorns reflects 30% damage back to attacker
+- **Protective**: Block reduces next incoming damage by 50%
+
+Status effects can be both **proactive** (tick effects) and **reactive** (event listeners).
 
 ## Passive
 
 Permanent modifier source attached to an entity. Active as long as the entity has it.
 
-Example: "Heavy Armor Training: +10% defense"
+**Types:**
+- **Stat Modifiers**: "+10% defense", "+5 attack"
+- **Event-Driven Behaviors**: Counterattack, lifesteal, rage generation (NEW)
+
+**Examples:**
+- **Simple**: "Heavy Armor Training: +10% defense"
+- **Reactive**: "Counterattack: Strike back when hit by physical attacks"
+- **Conditional**: "Berserker: +20% attack when below 30% health"
+
+Passives are permanent but can have conditional modifiers or event-driven behaviors.
 
 ## Equipment
 
 Togglable modifier source. Can be added/removed dynamically.
 
-Example: "Iron Sword: +5 attack"
+**Types:**
+- **Stat Modifiers**: "+5 attack", "+10 defense"
+- **Event-Driven Behaviors**: On-hit effects, reactive armor (NEW)
+
+**Examples:**
+- **Simple**: "Iron Sword: +5 attack"
+- **Reactive**: "Thornmail: Reflects 30% of incoming damage"
+- **On-Hit**: "Vampiric Blade: Heal for 20% of damage dealt"
+
+Equipment combines the toggleability of gear with the power of reactive behaviors.
 
 ## Instance
 
@@ -221,6 +245,475 @@ Seeded pseudo-random number generator (PRNG):
 - API: `next()` returns float in [0, 1), `nextInt(min, max)`, `choose(array)`, etc.
 
 Critical for determinism: All randomness must flow through this source.
+
+## Event-Driven Behaviors
+
+**Critical Concept for AI Agents:** Passives, Status Effects, and Equipment can **react to events** in addition to providing stat modifiers.
+
+This enables complex game mechanics entirely through JSON:
+- Counterattack
+- Damage reflection (Thorns)
+- Lifesteal/Vampirism
+- Rage generation
+- Conditional damage reduction
+- On-death effects
+- Triggered abilities
+- Chain reactions
+
+### Event Listener Structure
+
+```typescript
+{
+  "event": string,              // What event to listen for
+  "condition"?: string,         // Formula: only trigger if true
+  "priority"?: "highest" | "high" | "normal" | "low" | "lowest",
+  "effects": EffectData[],      // What to do (conditional chain)
+  "maxTriggersPerTurn"?: number,
+  "maxTriggersPerCombat"?: number,
+  "consumeOnTrigger"?: boolean,
+  "description"?: string
+}
+```
+
+### Available Events
+
+**Damage Events:**
+- `damage:before_calculate` - Modify base damage before calculation
+- `damage:calculated` - Modify final damage value
+- `damage:before_apply` - Last chance to modify or cancel
+- `damage:applied` - React after damage is dealt (counterattack, thorns)
+
+**Healing Events:**
+- `heal:before_apply` - Modify or cancel healing
+- `heal:applied` - React after healing
+
+**Action Events:**
+- `action:before_execute` - Can cancel or modify action
+- `action:executed` - React after action completes
+- `action:failed` - React to failed actions
+
+**Effect Events:**
+- `effect:before_apply` - Modify or cancel specific effects
+- `effect:applied` - React after effect applied
+
+**Resource Events:**
+- `resource:changed` - When any resource changes
+- `resource:depleted` - When resource reaches 0
+
+**Status Events:**
+- `status:before_apply` - Can prevent status application
+- `status:applied` - React to gaining status
+- `status:removed` - React to losing status
+
+**Entity Events:**
+- `entity:defeated` - On-death effects
+- `entity:revived` - React to resurrection
+
+**Turn Events:**
+- `turn:started` - At start of turn
+- `turn:ended` - At end of turn
+
+**Combat Events:**
+- `combat:started` - At combat start
+- `combat:ended` - At combat end
+
+### Event Context for Formulas
+
+Event listener formulas have access to:
+
+**Core Variables:**
+- `self` - Entity that owns this passive/status/equipment
+- `event` - Full event object with all data
+- `random` - Seeded random source
+
+**Convenient Shortcuts:**
+- `source` - Entity that caused the event (same as `event.data.source`)
+- `target` - Entity affected by event (same as `event.data.target`)
+- `attacker` - For damage events
+- `defender` - For damage events
+- `damage` - Damage amount (if applicable)
+- `healing` - Healing amount (if applicable)
+- `action` - Action being executed (if applicable)
+
+**Conditional Chaining:**
+- `previousEffect` - Result of previous effect in chain
+- `previousEffect.succeeded` - Whether previous effect worked
+- `previousEffect.value` - Return value of previous effect
+
+### Effect Types for Event Listeners
+
+**Standard Effects:**
+- `damage` - Deal damage
+- `heal` - Restore health
+- `apply_status` - Apply a status effect
+- `remove_status` - Remove a status effect
+- `modify_resource` - Change resource value
+
+**Event-Specific Effects:**
+- `execute_action` - Trigger an action (counterattack)
+- `modify_event` - Change event data (reduce damage)
+- `cancel_event` - Prevent event from happening
+- `apply_to_source` - Apply effect to event source
+- `apply_to_all_allies` - AoE effect to allies
+- `apply_to_all_enemies` - AoE effect to enemies
+
+**Effect Targets:**
+- `self` - Entity with this passive/status/equipment
+- `event_source` - Entity that caused the event
+- `event_target` - Entity affected by the event
+- `selected` - Explicitly selected target
+- `all_allies` - All allies of self
+- `all_enemies` - All enemies of self
+
+### Conditional Effect Chaining
+
+Effects in an event listener execute **conditionally in sequence**:
+
+```json
+{
+  "effects": [
+    {
+      "type": "damage",
+      "formula": "50",
+      "target": "event_source",
+      "description": "Always executes"
+    },
+    {
+      "type": "heal",
+      "formula": "previousEffect.value * 0.5",
+      "target": "self",
+      "condition": "previousEffect.succeeded",
+      "description": "Only if damage succeeded"
+    }
+  ]
+}
+```
+
+**Chaining Rules:**
+- Effects execute in order
+- Each effect can check `previousEffect.succeeded`
+- If an effect fails, subsequent effects see the failure
+- Use `condition` on effects for branching logic
+
+### Priority System
+
+Event listeners use **semantic priorities** (AI-friendly):
+
+- `highest` - 1000 (block, immunity, cancellation)
+- `high` - 750 (damage modification, critical conditions)
+- `normal` - 500 (default, most reactions)
+- `low` - 250 (aftermath, cleanup)
+- `lowest` - 0 (final reactions, logging)
+
+Higher priority listeners execute first. Use priority to control order:
+- **Block** (highest) should reduce damage before **Thorns** (normal) reflects it
+- **Immunity** (highest) should cancel damage before **Counterattack** (normal) triggers
+
+### Pattern Library
+
+**Pattern 1: Counterattack**
+```json
+{
+  "id": "counterattack",
+  "name": "Counterattack",
+  "description": "Strike back when hit by physical attacks",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "event.target.id == self.id && event.tags.includes('physical')",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "execute_action",
+          "actionId": "basic_attack",
+          "target": "event_source",
+          "description": "Attack the attacker"
+        }
+      ],
+      "maxTriggersPerTurn": 1
+    }
+  ]
+}
+```
+
+**Pattern 2: Damage Reflection (Thorns)**
+```json
+{
+  "id": "thorns",
+  "name": "Thorns",
+  "description": "Reflects 30% of damage back to attacker",
+  "duration": 3,
+  "stackRule": "refresh",
+  "tickTiming": "turn_end",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "target.id == self.id",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "damage",
+          "formula": "damage * 0.3",
+          "target": "event_source",
+          "tags": ["thorns", "reflected"],
+          "description": "Reflect 30% damage"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Pattern 3: Block/Damage Reduction**
+```json
+{
+  "id": "block",
+  "name": "Block",
+  "description": "Reduces next incoming damage by 50%",
+  "duration": 1,
+  "stackRule": "replace",
+  "tickTiming": "turn_start",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:before_apply",
+      "condition": "target.id == self.id",
+      "priority": "high",
+      "effects": [
+        {
+          "type": "modify_event",
+          "eventModifications": {
+            "damage": "damage * 0.5"
+          },
+          "description": "Reduce damage by 50%"
+        }
+      ],
+      "maxTriggersPerTurn": 1,
+      "consumeOnTrigger": true
+    }
+  ]
+}
+```
+
+**Pattern 4: Lifesteal/Vampirism**
+```json
+{
+  "id": "vampiric_blade",
+  "name": "Vampiric Blade",
+  "description": "Heal for 20% of damage dealt",
+  "modifiers": [
+    { "target": "attack", "type": "add", "value": "5", "priority": 0 }
+  ],
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "source.id == self.id",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "heal",
+          "formula": "damage * 0.2",
+          "target": "self",
+          "description": "Heal for 20% of damage dealt"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Pattern 5: Rage Generation**
+```json
+{
+  "id": "berserker_rage",
+  "name": "Berserker Rage",
+  "description": "Gain rage when taking damage",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "target.id == self.id",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "formula": "min(100, self.resources.rage.current + damage * 0.2)",
+          "target": "self",
+          "description": "Gain rage equal to 20% of damage taken"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Pattern 6: On-Death Explosion**
+```json
+{
+  "id": "vengeful_spirit",
+  "name": "Vengeful Spirit",
+  "description": "Explode on death, damaging all enemies",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "entity:defeated",
+      "condition": "event.entity.id == self.id",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "damage",
+          "formula": "self.maxHealth * 0.5",
+          "target": "all_enemies",
+          "tags": ["explosion", "death"],
+          "description": "Deal 50% of max health to all enemies"
+        }
+      ],
+      "consumeOnTrigger": true
+    }
+  ]
+}
+```
+
+**Pattern 7: Conditional Execution**
+```json
+{
+  "id": "execute",
+  "name": "Execute",
+  "description": "Deal bonus damage to low-health targets",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:calculated",
+      "condition": "source.id == self.id",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "modify_event",
+          "eventModifications": {
+            "damage": "damage * 2"
+          },
+          "condition": "target.resources.health.current < target.resources.health.max * 0.3",
+          "description": "Double damage if target below 30% health"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Pattern 8: Invulnerability**
+```json
+{
+  "id": "divine_shield",
+  "name": "Divine Shield",
+  "description": "Immune to all damage for 1 turn",
+  "duration": 1,
+  "stackRule": "replace",
+  "tickTiming": "turn_end",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:before_apply",
+      "condition": "target.id == self.id",
+      "priority": "highest",
+      "effects": [
+        {
+          "type": "cancel_event",
+          "description": "Cancel all incoming damage"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Best Practices for AI Agents
+
+**1. Choose the Right Event:**
+- Use `before_apply` events for prevention/modification
+- Use `applied` events for reactions
+- Use `calculated` events for formula adjustments
+
+**2. Use Semantic Priority:**
+- `highest` for immunity, cancellation
+- `high` for damage modification
+- `normal` for most reactions
+- `low` for cleanup, aftermath
+
+**3. Add Descriptions:**
+Always include `description` fields - helps debugging and AI understanding.
+
+**4. Test Conditions:**
+Validate condition formulas before deployment:
+- Check that variables exist (`self`, `event`, `source`, `target`)
+- Test edge cases (null values, zero damage, etc.)
+
+**5. Prevent Infinite Loops:**
+- Use `maxTriggersPerTurn` for aggressive reactions
+- Don't create mutual triggers (A triggers B which triggers A)
+- Be careful with `execute_action` in damage events
+
+**6. Use Conditional Chaining:**
+Chain effects with `previousEffect.succeeded` for complex logic:
+```json
+{
+  "effects": [
+    { "type": "damage", "formula": "50", "target": "event_source" },
+    {
+      "type": "heal",
+      "formula": "previousEffect.value * 0.5",
+      "target": "self",
+      "condition": "previousEffect.succeeded"
+    }
+  ]
+}
+```
+
+### Common Mistakes to Avoid
+
+**❌ Wrong:** Referencing undefined variables
+```json
+{ "condition": "attacker.health < 50" }  // 'attacker' might not exist
+```
+**✅ Right:** Check existence first
+```json
+{ "condition": "source && source.resources.health.current < 50" }
+```
+
+**❌ Wrong:** Infinite loop
+```json
+// Entity A has: on damage -> deal damage to source
+// Entity B has: on damage -> deal damage to source
+// A damages B → B damages A → A damages B → infinite loop
+```
+**✅ Right:** Add trigger limits or use tags
+```json
+{
+  "event": "damage:applied",
+  "condition": "!event.tags.includes('reflected')",
+  "effects": [
+    { "type": "damage", "tags": ["reflected"], ... }
+  ],
+  "maxTriggersPerTurn": 1
+}
+```
+
+**❌ Wrong:** Modifying after application
+```json
+{
+  "event": "damage:applied",  // Too late to modify
+  "effects": [{ "type": "modify_event", ... }]
+}
+```
+**✅ Right:** Use before/calculated events
+```json
+{
+  "event": "damage:before_apply",  // Can still modify
+  "effects": [{ "type": "modify_event", ... }]
+}
+```
 
 ---
 
@@ -366,10 +859,12 @@ Output: Final computed value
 
 ## Status Effect Template
 
+**Simple (Damage Over Time):**
 ```json
 {
   "id": "poison",
   "name": "Poison",
+  "description": "Deals 5 damage per turn",
   "tags": ["damage_over_time", "poison"],
   "duration": 3,
   "stackRule": "refresh",
@@ -385,12 +880,76 @@ Output: Final computed value
 }
 ```
 
+**Reactive (Thorns):**
+```json
+{
+  "id": "thorns",
+  "name": "Thorns",
+  "description": "Reflects 30% of damage back to attacker",
+  "tags": ["buff", "reflection"],
+  "duration": 3,
+  "stackRule": "refresh",
+  "tickTiming": "turn_end",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "target.id == self.id",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "damage",
+          "formula": "damage * 0.3",
+          "target": "event_source",
+          "tags": ["thorns", "reflected"],
+          "description": "Reflect 30% damage"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Protective (Block):**
+```json
+{
+  "id": "block",
+  "name": "Block",
+  "description": "Reduces next incoming damage by 50%",
+  "tags": ["buff", "protection"],
+  "duration": 1,
+  "stackRule": "replace",
+  "tickTiming": "turn_start",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:before_apply",
+      "condition": "target.id == self.id",
+      "priority": "high",
+      "effects": [
+        {
+          "type": "modify_event",
+          "eventModifications": {
+            "damage": "damage * 0.5"
+          },
+          "description": "Reduce damage by 50%"
+        }
+      ],
+      "maxTriggersPerTurn": 1,
+      "consumeOnTrigger": true
+    }
+  ]
+}
+```
+
 ## Passive Trait
 
+**Simple (Stat Modifier):**
 ```json
 {
   "id": "heavy_armor_training",
   "name": "Heavy Armor Training",
+  "description": "Increases defense by 10%",
   "modifiers": [
     {
       "target": "defense",
@@ -402,12 +961,39 @@ Output: Final computed value
 }
 ```
 
+**Reactive (Event-Driven):**
+```json
+{
+  "id": "counterattack",
+  "name": "Counterattack",
+  "description": "Strike back when hit by physical attacks",
+  "modifiers": [],
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "target.id == self.id && event.tags.includes('physical')",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "execute_action",
+          "actionId": "basic_attack",
+          "target": "event_source"
+        }
+      ],
+      "maxTriggersPerTurn": 1
+    }
+  ]
+}
+```
+
 ## Equipment Item
 
+**Simple (Stat Modifier):**
 ```json
 {
   "id": "iron_sword",
   "name": "Iron Sword",
+  "description": "A basic iron sword",
   "tags": ["weapon", "melee"],
   "modifiers": [
     {
@@ -415,6 +1001,39 @@ Output: Final computed value
       "type": "add",
       "value": "5",
       "priority": 0
+    }
+  ]
+}
+```
+
+**Reactive (Lifesteal):**
+```json
+{
+  "id": "vampiric_blade",
+  "name": "Vampiric Blade",
+  "description": "Heals wielder for 20% of damage dealt",
+  "tags": ["weapon", "melee", "vampiric"],
+  "modifiers": [
+    {
+      "target": "attack",
+      "type": "add",
+      "value": "5",
+      "priority": 0
+    }
+  ],
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "source.id == self.id",
+      "priority": "normal",
+      "effects": [
+        {
+          "type": "heal",
+          "formula": "damage * 0.2",
+          "target": "self",
+          "description": "Heal for 20% of damage dealt"
+        }
+      ]
     }
   ]
 }
@@ -530,6 +1149,231 @@ eventBus.on('damage:applied', (event) => {
 
 ---
 
+# AI Agent Guidelines
+
+**Target Audience:** This section is for AI agents building games with Stratagem.
+
+## Quick Start for AI Agents
+
+**1. Understand the Primitives**
+- **Entities**: Game participants (heroes, monsters, NPCs)
+- **Attributes**: Numerical stats (attack, defense, speed)
+- **Resources**: Bounded values (health, mana, stamina)
+- **Actions**: What entities can do (attack, cast spell, use item)
+- **Modifiers**: How stats are changed (+10 attack, ×1.2 damage)
+- **Event Listeners**: How to react to game events (counterattack, thorns)
+
+**2. JSON is Your Interface**
+Everything is defined in validated JSON. No code generation needed.
+
+**3. Composition Over Complexity**
+Build complex behaviors by combining simple primitives:
+- Counterattack = Event Listener on `damage:applied` that executes an action
+- Lifesteal = Event Listener on `damage:applied` that heals self
+- Thorns = Event Listener on `damage:applied` that damages source
+
+## Discovering What's Possible
+
+**Available Events:**
+Use these events in `eventListeners`:
+- `damage:before_calculate`, `damage:calculated`, `damage:before_apply`, `damage:applied`
+- `heal:before_apply`, `heal:applied`
+- `action:before_execute`, `action:executed`
+- `effect:before_apply`, `effect:applied`
+- `status:before_apply`, `status:applied`, `status:removed`
+- `entity:defeated`, `entity:revived`
+- `turn:started`, `turn:ended`
+- `combat:started`, `combat:ended`
+
+**Effect Types:**
+Use these in `effects`:
+- `damage`, `heal` - Deal/restore hit points
+- `apply_status`, `remove_status` - Apply/remove status effects
+- `modify_resource` - Change resource values
+- `execute_action` - Trigger another action
+- `modify_event` - Change event data (reduce damage, etc.)
+- `cancel_event` - Prevent event from happening
+- `apply_to_source` - Apply effect to event source
+
+**Formula Variables:**
+Use these in `formula` and `condition` fields:
+- `self` - Entity with this passive/status/equipment
+- `event` - Full event data
+- `source` / `target` - Shortcuts for event.data.source / event.data.target
+- `damage`, `healing`, `action` - Event-specific data
+- `random` - Seeded random source
+- `previousEffect` - Result of previous effect in chain
+
+## Common Design Patterns
+
+**Pattern: Stat Buff**
+```json
+{
+  "id": "strength_buff",
+  "modifiers": [
+    { "target": "attack", "type": "add", "value": "10", "priority": 0 }
+  ]
+}
+```
+
+**Pattern: Reactive Damage**
+```json
+{
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "target.id == self.id",
+      "effects": [
+        { "type": "damage", "formula": "damage * 0.3", "target": "event_source" }
+      ]
+    }
+  ]
+}
+```
+
+**Pattern: Conditional Modifier**
+```json
+{
+  "modifiers": [
+    {
+      "target": "attack",
+      "type": "multiply",
+      "value": "1.5",
+      "priority": 0,
+      "condition": "self.resources.health.current < self.resources.health.max * 0.3"
+    }
+  ]
+}
+```
+
+**Pattern: Action Trigger**
+```json
+{
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "condition": "target.id == self.id",
+      "effects": [
+        { "type": "execute_action", "actionId": "basic_attack", "target": "event_source" }
+      ],
+      "maxTriggersPerTurn": 1
+    }
+  ]
+}
+```
+
+## Validation and Testing
+
+**Before Deploying Game Data:**
+
+1. **Validate JSON Syntax**
+   - Ensure proper JSON formatting
+   - Check for missing commas, brackets, quotes
+
+2. **Validate Formula Syntax**
+   - Test formulas with `Formula.validate(formula)`
+   - Ensure variables exist in context
+   - Check for typos in property names
+
+3. **Check References**
+   - All `actionId` references must exist
+   - All `statusId` references must exist
+   - All event types should be valid
+
+4. **Test Edge Cases**
+   - What happens when health is 0?
+   - What if source/target is undefined?
+   - What if damage is negative?
+
+5. **Prevent Infinite Loops**
+   - Check for mutual triggers
+   - Add `maxTriggersPerTurn` when needed
+   - Use tags to prevent recursion
+
+## Common Pitfalls
+
+**Pitfall 1: Undefined Variables**
+❌ `"condition": "attacker.health < 50"`
+- `attacker` might not exist in event context
+
+✅ `"condition": "source && source.resources.health.current < 50"`
+- Check existence first, use correct path
+
+**Pitfall 2: Wrong Event Phase**
+❌ Using `damage:applied` to modify damage
+- Too late - damage already applied
+
+✅ Using `damage:before_apply` or `damage:calculated`
+- Can still modify damage value
+
+**Pitfall 3: Infinite Recursion**
+❌ Entity A: on damage → damage B; Entity B: on damage → damage A
+
+✅ Add trigger limits or use tags to break cycle
+
+**Pitfall 4: Wrong Target**
+❌ `"target": "source"` (invalid)
+- Must use predefined target types
+
+✅ `"target": "event_source"`
+- Use correct target type
+
+**Pitfall 5: Missing Conditions**
+❌ Counterattack triggers on ALL damage (including thorns reflection)
+
+✅ Add condition: `"condition": "!event.tags.includes('reflected')"`
+
+## Iterative Development
+
+**Start Simple:**
+1. Create basic entities with stat modifiers
+2. Add simple actions (basic attack, heal)
+3. Test combat with no special mechanics
+4. Add one reactive behavior at a time
+5. Test each addition thoroughly
+6. Build complexity gradually
+
+**Example Progression:**
+1. Knight with +10 defense (static modifier)
+2. Knight with Counterattack (event listener)
+3. Knight with Conditional Counterattack (only when high health)
+4. Knight with Counterattack that heals (effect chaining)
+
+## Debugging Tips
+
+**Use Descriptions:**
+Every passive, status, action, and effect should have a `description` field:
+```json
+{
+  "id": "thorns",
+  "description": "Reflects 30% of damage back to attacker",
+  "eventListeners": [
+    {
+      "event": "damage:applied",
+      "description": "Triggered when entity takes damage",
+      "effects": [
+        {
+          "type": "damage",
+          "description": "Deal reflected damage to attacker",
+          ...
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Check Event History:**
+The engine tracks all events. Review the history to see what fired and when.
+
+**Validate Early:**
+Use JSON schema validation before loading into the engine. Catch errors early.
+
+**Test in Isolation:**
+Test individual passives/statuses separately before combining them.
+
+---
+
 # AI Integration
 
 ## State Inspection
@@ -546,6 +1390,62 @@ const actions = entity.getAvailableActions(instance);
 // Get valid targets for an action
 const targets = action.getValidTargets(entity, instance);
 // Returns: Entity[] (filtered by targeting rules, range, etc.)
+
+// Discover what reactive behaviors an entity has (NEW)
+const reactions = entity.getEventReactions('damage:applied');
+// Returns: EventReaction[] with details about what triggers
+```
+
+### Entity Reaction Enumeration
+
+AI agents can query what reactive behaviors an entity possesses:
+
+```typescript
+interface EventReaction {
+  sourceType: 'passive' | 'status' | 'equipment';
+  sourceId: string;
+  sourceName: string;
+  event: string;
+  condition?: string;
+  effectsSummary: string;  // Human-readable description
+  priority: EventPriority;
+  maxTriggersPerTurn?: number;
+  maxTriggersPerCombat?: number;
+}
+```
+
+**Example Usage:**
+```typescript
+const knight = loadEntity('knight_with_counterattack');
+
+// Get all reactions
+const allReactions = knight.getEventReactions();
+// Returns all event listeners from passives, statuses, equipment
+
+// Get reactions to specific event
+const damageReactions = knight.getEventReactions('damage:applied');
+// Returns: [
+//   {
+//     sourceType: 'passive',
+//     sourceId: 'counterattack',
+//     sourceName: 'Counterattack',
+//     event: 'damage:applied',
+//     condition: 'target.id == self.id && event.tags.includes("physical")',
+//     effectsSummary: 'Executes basic_attack on event_source',
+//     priority: 'normal',
+//     maxTriggersPerTurn: 1
+//   }
+// ]
+
+// AI can now reason: "This knight will counterattack if I use physical attacks"
+```
+
+This enumeration allows AI agents to:
+- Understand entity capabilities before combat
+- Make informed tactical decisions
+- Generate appropriate opponents (don't give Counterattack to both sides)
+- Debug unexpected behaviors
+- Generate descriptions for players
 ```
 
 ## Simulation (Readonly)
