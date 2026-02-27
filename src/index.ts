@@ -9,6 +9,7 @@ export * from './types/index.js';
 
 // Core classes
 export { Attribute } from './core/Attribute.js';
+export { Resource } from './core/Resource.js';
 
 // Modifier system
 export { Modifier } from './modifiers/Modifier.js';
