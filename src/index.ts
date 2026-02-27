@@ -7,19 +7,12 @@
 // Core types
 export * from './types/index.js';
 
-// Core classes (to be implemented)
-// export * from './core/Entity.js';
-// export * from './core/Action.js';
-// export * from './core/Attribute.js';
-// export * from './core/Resource.js';
-// export * from './core/Passive.js';
-// export * from './core/StatusEffect.js';
-// export * from './core/Equipment.js';
-// export * from './core/Instance.js';
+// Core classes
+export { Attribute } from './core/Attribute.js';
 
 // Modifier system
-export * from './modifiers/Modifier.js';
-export * from './modifiers/ModifierStack.js';
+export { Modifier } from './modifiers/Modifier.js';
+export { ModifierStack } from './modifiers/ModifierStack.js';
 
 // Combat system (to be implemented)
 // export * from './combat/CombatController.js';
