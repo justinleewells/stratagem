@@ -34,8 +34,8 @@ export * from './types/index.js';
 // Events (to be implemented)
 // export * from './events/EventBus.js';
 
-// Formula (to be implemented)
-// export * from './formula/Formula.js';
+// Formula
+export * from './formula/Formula.js';
 
 // Random
 export * from './random/RandomSource.js';

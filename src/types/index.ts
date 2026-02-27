@@ -206,7 +206,7 @@ export interface FormulaContext {
   attacker?: any;
   target?: any;
   action?: any;
-  random: any; // RandomSource - avoiding circular dependency
+  random?: any; // RandomSource - avoiding circular dependency
   [key: string]: any;
 }
 
