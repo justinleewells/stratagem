@@ -17,9 +17,9 @@ export * from './types/index.js';
 // export * from './core/Equipment.js';
 // export * from './core/Instance.js';
 
-// Modifier system (to be implemented)
-// export * from './modifiers/Modifier.js';
-// export * from './modifiers/ModifierStack.js';
+// Modifier system
+export * from './modifiers/Modifier.js';
+export * from './modifiers/ModifierStack.js';
 
 // Combat system (to be implemented)
 // export * from './combat/CombatController.js';
