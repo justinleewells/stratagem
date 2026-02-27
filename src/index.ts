@@ -10,6 +10,7 @@ export * from './types/index.js';
 // Core classes
 export { Attribute } from './core/Attribute.js';
 export { Resource } from './core/Resource.js';
+export { Entity } from './core/Entity.js';
 
 // Modifier system
 export { Modifier } from './modifiers/Modifier.js';
